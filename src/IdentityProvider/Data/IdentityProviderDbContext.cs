@@ -7,7 +7,7 @@ namespace IdentityProvider.Data
 {
     public class IdentityProviderDbContext : IdentityDbContext<User, Role, string>
     {
-        public IdentityProviderDbContext(DbContextOptions<IdentityProviderDbContext> options) 
+        public IdentityProviderDbContext(DbContextOptions<IdentityProviderDbContext> options)
             : base(options)
         {
 
