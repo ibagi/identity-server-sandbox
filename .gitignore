@@ -1,0 +1,9 @@
+.vs
+.vscode
+packages
+[bB]in
+[oO]bj
+*.csproj.user
+
+src/IdentityProvider/keys
+IdentityProvider.db*
