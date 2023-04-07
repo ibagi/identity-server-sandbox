@@ -1,4 +1,7 @@
 ﻿using Duende.IdentityServer.Models;
+using IdentityModel;
+using IdentityProvider.Models;
+using System.Security.Claims;
 
 namespace IdentityProvider
 {
@@ -29,6 +32,17 @@ namespace IdentityProvider
                     "api:read"
                 }
             }
+        };
+
+        public static List<UserSeed> Users => new()
+        {
+            new UserSeed("demo@email.com", "demo", "P@ssw0rd", new Claim[]
+            {
+                new Claim(JwtClaimTypes.Name, "Demo User"),
+                new Claim(JwtClaimTypes.GivenName, "Demo"),
+                new Claim(JwtClaimTypes.FamilyName, "User"),
+                new Claim(JwtClaimTypes.WebSite, "http://demo.user.com")
+            })
         };
     }
 }

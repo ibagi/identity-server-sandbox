@@ -19,13 +19,18 @@ builder.Services.AddIdentityServer()
     .AddInMemoryClients(Config.Clients)
     .AddAspNetIdentity<User>();
 
+builder.Services.AddRazorPages();
+
 var app = builder.Build();
 
+app.UseStaticFiles();
 app.UseIdentityServer();
+
+app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
-    await DbStartup.ConfigureDb(scope);
+    await DbStartup.ConfigureDb(scope, Config.Users);
 }
 
 app.Run();
