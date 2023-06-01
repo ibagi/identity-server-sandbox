@@ -1,4 +1,5 @@
-﻿using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 using IdentityModel;
 using IdentityProvider.Models;
 using System.Security.Claims;
@@ -7,6 +8,13 @@ namespace IdentityProvider
 {
     static class Config
     {
+        public static List<IdentityResource> IdentityResources => new()
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile(),
+            new IdentityResources.Email(),
+        };
+
         public static List<ApiScope> ApiScopes => new()
         {
             new ApiScope
@@ -31,6 +39,28 @@ namespace IdentityProvider
                 {
                     "api:read"
                 }
+            },
+
+            new Client
+            {
+                ClientId = "ssr-client",
+                ClientName= "SsrClient",
+                AllowedGrantTypes = GrantTypes.Code,
+                ClientSecrets =
+                {
+                    new Secret("ssr-client-secret".Sha256())
+                },
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    "api:read"
+                },
+                RedirectUris = 
+                { 
+                    "http://localhost:3000/api/auth/callback/duende-identityserver6" 
+                },
             }
         };
 
