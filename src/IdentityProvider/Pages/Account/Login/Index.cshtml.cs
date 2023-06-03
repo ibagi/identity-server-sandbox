@@ -30,7 +30,7 @@ public class Index : PageModel
 
     public async Task<IActionResult> OnGet(string returnUrl)
     {
-       return await PageResult(returnUrl);
+        return await PageResult(returnUrl);
     }
 
     public async Task<IActionResult> OnPost()
@@ -103,7 +103,7 @@ public class Index : PageModel
         };
 
         // issue authentication cookie with subject ID and username
-        var isuser = new IdentityServerUser(IdentityServerConstants.LocalIdentityProvider)
+        var isuser = new IdentityServerUser(user.Id.ToString())
         {
             DisplayName = user.UserName
         };

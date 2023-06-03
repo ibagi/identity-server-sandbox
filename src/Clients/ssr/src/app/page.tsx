@@ -1,10 +1,9 @@
-import LoginForm from './components/login-form'
-import styles from './page.module.css'
+import LoginSection from './components/login'
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <LoginForm />
+    <main>
+      <LoginSection />
     </main>
   )
 }

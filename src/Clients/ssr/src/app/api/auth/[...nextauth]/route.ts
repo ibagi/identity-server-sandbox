@@ -6,7 +6,7 @@ const handler = NextAuth({
     DuendeIDS6Provider({
         clientId: process.env.DUENDE_IDS6_ID || 'ssr-client',
         clientSecret: process.env.DUENDE_IDS6_SECRET || 'ssr-client-secret',
-        issuer: process.env.DUENDE_IDS6_ISSUER || 'http://localhost:5273',
+        issuer: process.env.DUENDE_IDS6_ISSUER || 'http://localhost:5273'
       })
   ]
 })
