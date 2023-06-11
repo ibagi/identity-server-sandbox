@@ -1,7 +1,8 @@
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
-using IdentityProvider.Models;
+using IdentityProvider.Entities;
+using IdentityProvider.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,17 +16,17 @@ namespace IdentityProvider.Pages.Login;
 public class Index : PageModel
 {
     private readonly IIdentityServerInteractionService _interaction;
-    private readonly UserManager<User> _userManager;
+    private readonly IUserService _userService;
 
     public ViewModel View { get; set; }
 
     [BindProperty]
     public InputModel Input { get; set; }
 
-    public Index(IIdentityServerInteractionService interaction, UserManager<User> userManager)
+    public Index(IIdentityServerInteractionService interaction, IUserService userService)
     {
         _interaction = interaction;
-        _userManager = userManager;
+        _userService = userService;
     }
 
     public async Task<IActionResult> OnGet(string returnUrl)
@@ -71,19 +72,18 @@ public class Index : PageModel
             return await PageResult(Input.ReturnUrl);
         }
 
-        var user = await _userManager.FindByEmailAsync(Input.Username);
-        user ??= await _userManager.FindByNameAsync(Input.Username);
+        var credentialsAreValid = await _userService.ValidateCredentialsAsync(Input.Username, Input.Password);
 
-        if (user is null)
+        // validate username/password against in-memory store
+        if (!credentialsAreValid)
         {
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
             return await PageResult(Input.ReturnUrl);
         }
 
-        var passwordCheck = await _userManager.CheckPasswordAsync(user, Input.Password);
+        var user = await _userService.GetByUsernameOrEmail(Input.Username);
 
-        // validate username/password against in-memory store
-        if (!passwordCheck)
+        if (user is null)
         {
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
             return await PageResult(Input.ReturnUrl);
@@ -103,7 +103,7 @@ public class Index : PageModel
         };
 
         // issue authentication cookie with subject ID and username
-        var isuser = new IdentityServerUser(user.Id.ToString())
+        var isuser = new IdentityServerUser(user.Subject)
         {
             DisplayName = user.UserName
         };

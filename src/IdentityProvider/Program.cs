@@ -1,7 +1,6 @@
 using IdentityProvider;
 using IdentityProvider.Data;
-using IdentityProvider.Models;
-using Microsoft.AspNetCore.Identity;
+using IdentityProvider.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,15 +9,13 @@ builder.Services.AddDbContext<IdentityProviderDbContext>(o =>
     o.UseSqlite(builder.Configuration.GetConnectionString(nameof(IdentityProvider)),
         b => b.MigrationsAssembly(nameof(IdentityProvider))));
 
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<IdentityProviderDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddIdentityServer()
+    .AddProfileService<ProfileService>()
     .AddInMemoryIdentityResources(Config.IdentityResources)
     .AddInMemoryApiScopes(Config.ApiScopes)
-    .AddInMemoryClients(Config.Clients)
-    .AddAspNetIdentity<User>();
+    .AddInMemoryClients(Config.Clients);
 
 builder.Services.AddRazorPages();
 
@@ -31,7 +28,7 @@ app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
-    await DbStartup.ConfigureDb(scope, Config.Users);
+    DbInitializer.ConfigureDb(scope, Config.Users);
 }
 
 app.Run();

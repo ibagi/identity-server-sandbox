@@ -1,7 +1,6 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using IdentityModel;
-using IdentityProvider.Models;
 using System.Security.Claims;
 
 namespace IdentityProvider
@@ -61,6 +60,10 @@ namespace IdentityProvider
                 { 
                     "http://localhost:3000/api/auth/callback/duende-identityserver6" 
                 },
+                PostLogoutRedirectUris =
+                {
+                    "http://localhost:3000/"
+                }
             }
         };
 
@@ -68,10 +71,9 @@ namespace IdentityProvider
         {
             new UserSeed("demo@email.com", "demo", "P@ssw0rd", new Claim[]
             {
-                new Claim(JwtClaimTypes.Name, "Demo User"),
-                new Claim(JwtClaimTypes.GivenName, "Demo"),
-                new Claim(JwtClaimTypes.FamilyName, "User"),
-                new Claim(JwtClaimTypes.WebSite, "http://demo.user.com")
+                new Claim(JwtClaimTypes.Name, "demo"),
+                new Claim(JwtClaimTypes.GivenName, "Demo User"),
+                new Claim(JwtClaimTypes.Email, "demo@email.com")
             })
         };
     }
